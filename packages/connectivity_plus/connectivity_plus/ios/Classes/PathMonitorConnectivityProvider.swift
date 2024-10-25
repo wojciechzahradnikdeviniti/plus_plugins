@@ -4,7 +4,7 @@ import Network
 @available(iOS 12, *)
 public class PathMonitorConnectivityProvider: NSObject, ConnectivityProvider {
 
-  private let queue = DispatchQueue.global(qos: .background)
+  private let queue = DispatchQueue.global(qos: .utility)
 
   private var _pathMonitor: NWPathMonitor?
 
