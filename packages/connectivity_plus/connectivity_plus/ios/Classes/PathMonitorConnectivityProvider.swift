@@ -23,7 +23,7 @@ public class PathMonitorConnectivityProvider: NSObject, ConnectivityProvider {
     return .none
   }
 
-  public var currentConnectivityTypes: ConnectivityType {
+  public var currentConnectivityType: ConnectivityType {
     let path = ensurePathMonitor().currentPath
     return connectivityFrom(path: path)
   }
