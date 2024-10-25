@@ -8,23 +8,24 @@ public class PathMonitorConnectivityProvider: NSObject, ConnectivityProvider {
 
   private var _pathMonitor: NWPathMonitor?
 
-  public var currentConnectivityType: ConnectivityType {
-    let path = ensurePathMonitor().currentPath
-    // .satisfied means that the network is available
+  private func connectivityFrom(path: NWPath) -> ConnectivityType {
     if path.status == .satisfied {
       if path.usesInterfaceType(.wifi) {
         return .wifi
       } else if path.usesInterfaceType(.cellular) {
         return .cellular
       } else if path.usesInterfaceType(.wiredEthernet) {
-        // .wiredEthernet is available in simulator
-        // but for consistency it is probably correct to report .wifi
-        return .wifi
+        return .wiredEthernet
       } else if path.usesInterfaceType(.other) {
         return .other
       }
     }
     return .none
+  }
+
+  public var currentConnectivityTypes: ConnectivityType {
+    let path = ensurePathMonitor().currentPath
+    return connectivityFrom(path: path)
   }
 
   public var connectivityUpdateHandler: ConnectivityUpdateHandler?
@@ -55,6 +56,6 @@ public class PathMonitorConnectivityProvider: NSObject, ConnectivityProvider {
   }
 
   private func pathUpdateHandler(path: NWPath) {
-    connectivityUpdateHandler?(currentConnectivityType)
+    connectivityUpdateHandler?(connectivityFrom(path: path))
   }
 }
